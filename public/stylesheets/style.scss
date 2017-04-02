@@ -1,20 +1,24 @@
 @font-face {
   font-family: 'Telegrama';
-  src: url("../fonts/telegrama.otf"); }
+  src: url('../fonts/telegrama.otf');
+}
 
 body {
+  //padding: 50px;
   background: black;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
 
 a {
-  color: #00B7FF; }
+  color: #00B7FF;
+}
 
 canvas#altitude {
+  //background: white;
   width: 200px;
   height: 600px;
   position: fixed;
   margin-top: -300px;
   top: 50%;
-  left: 20%; }
-
-/*# sourceMappingURL=style.css.map */
+  left: 20%;
+}
