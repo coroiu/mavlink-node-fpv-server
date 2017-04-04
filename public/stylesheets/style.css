@@ -19,7 +19,6 @@ canvas#altitude {
 
 canvas#attitude {
   position: fixed;
-  background: white;
   margin-top: -300px;
   margin-left: -300px;
   top: 50%;

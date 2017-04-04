@@ -15,11 +15,16 @@
       }
 
       if (lineValue < -0.1) {
-        context.fillStyle = context.shadowColor = window.theme.redColor;
+        context.strokeStyle = context.shadowColor = window.theme.redColor;
       } else {
-        context.fillStyle = context.shadowColor = window.theme.mainColor;
+        context.strokeStyle = context.shadowColor = window.theme.mainColor;
       }
-      context.fillRect(100, y, localLineLength, 2);
+      
+      context.lineWidth = 2;
+      context.beginPath();
+      context.moveTo(100, y);
+      context.lineTo(100 + localLineLength, y); // bottom left
+      context.stroke();
     }
   }
 
@@ -48,7 +53,7 @@
     padding: 10,
     fontHeight: fontSize,
     borderThickness: 1.5,
-    font: 'Telegrama'
+    font: window.theme.numberFont
   });
 
   graphicsManager.addDrawables([majorLineRenderer, minorLineRenderer, borderedTextRenderer]);

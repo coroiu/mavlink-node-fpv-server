@@ -31,6 +31,7 @@ class BorderedTextRenderer {
     context.fillText(text, this.x, this.y);
 
     context.beginPath();
+    context.lineWidth = this.lineThickness;
     context.strokeStyle = context.shadowColor = window.theme.mainColor;
     context.moveTo(this.x - this.padding, this.y - textHeight - this.padding); // top left
     context.lineTo(this.x - this.padding, this.y + this.padding); // bottom left
