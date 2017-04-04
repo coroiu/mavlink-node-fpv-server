@@ -15,10 +15,19 @@ a {
 
 canvas#altitude {
   //background: white;
-  width: 200px;
-  height: 600px;
+  /*width: 200px;
+  height: 600px;*/
   position: fixed;
   margin-top: -300px;
   top: 50%;
   left: 20%;
+}
+
+canvas#attitude {
+  position: fixed;
+  background: white;
+  margin-top: -300px;
+  margin-left: -300px;
+  top: 50%;
+  left: 50%;
 }

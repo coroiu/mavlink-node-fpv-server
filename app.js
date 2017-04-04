@@ -4,7 +4,7 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const hardwareLink = require('./modules/hardware-link');
+//const hardwareLink = require('./modules/hardware-link');
 
 const routes = require('./routes/index');
 const users = require('./routes/users');
