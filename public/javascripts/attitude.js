@@ -60,19 +60,6 @@
       context.font = `${fontSize}px '${window.theme.numberFont}'`;
       context.fillText(lineValue, sideSpace - textWidth - textSpacing, textY);
       context.fillText(lineValue, width - sideSpace + textSpacing, textY);
-
-      // CROSSHAIR
-      const crosshairWidth = 75;
-      const crosshairHeight = 10;
-      const crosshairMiddleWidth = 20;
-      const crosshairMiddleHeight = 10;
-      context.beginPath();
-      context.moveTo(centerX - crosshairWidth/2, centerY);
-      context.lineTo(centerX - crosshairMiddleWidth/2, centerY);
-      context.lineTo(centerX, centerY + crosshairMiddleHeight);
-      context.lineTo(centerX + crosshairMiddleWidth/2, centerY);
-      context.lineTo(centerX + crosshairWidth/2, centerY);
-      context.stroke();
     }
   }
 
@@ -84,6 +71,20 @@
     lineOffset: 0,
     pixelsPerUnit: 150/5,
     onDrawLine: drawLine()
+  });
+
+  const crosshairRenderer = new ManualRenderer(function (context) {
+    const crosshairWidth = 75;
+    const crosshairHeight = 10;
+    const crosshairMiddleWidth = 20;
+    const crosshairMiddleHeight = 10;
+    context.beginPath();
+    context.moveTo(centerX - crosshairWidth/2, centerY);
+    context.lineTo(centerX - crosshairMiddleWidth/2, centerY);
+    context.lineTo(centerX, centerY + crosshairMiddleHeight);
+    context.lineTo(centerX + crosshairMiddleWidth/2, centerY);
+    context.lineTo(centerX + crosshairWidth/2, centerY);
+    context.stroke();
   });
 
   // const minorLineRenderer = new LineRenderer({
@@ -104,8 +105,7 @@
   //   font: 'Telegrama'
   // });
 
-  graphicsManager.addDrawable(majorLineRenderer);
-  // graphicsManager.addDrawables([majorLineRenderer, minorLineRenderer, borderedTextRenderer]);
+  graphicsManager.addDrawables([majorLineRenderer, crosshairRenderer]);
   graphicsManager.startDrawing();
 
   let x = 0;

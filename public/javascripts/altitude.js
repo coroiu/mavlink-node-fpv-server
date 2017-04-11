@@ -33,7 +33,7 @@
     from: 0,
     to: height,
     lineDistance: 40,
-    lineOffset: 20,
+    lineOffset: -20,
     pixelsPerUnit: 40,
     onDrawLine: drawLine(40)
   });
