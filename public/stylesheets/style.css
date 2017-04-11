@@ -15,7 +15,7 @@ canvas#altitude {
   position: fixed;
   margin-top: -300px;
   top: 50%;
-  left: 20%; }
+  left: 10%; }
 
 canvas#attitude {
   position: fixed;
@@ -23,5 +23,12 @@ canvas#attitude {
   margin-left: -300px;
   top: 50%;
   left: 50%; }
+
+canvas#heading {
+  position: fixed;
+  margin-left: -300px;
+  top: 5%;
+  left: 50%;
+  background: white; }
 
 /*# sourceMappingURL=style.css.map */

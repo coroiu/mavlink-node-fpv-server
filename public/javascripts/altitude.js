@@ -22,8 +22,8 @@
       
       context.lineWidth = 2;
       context.beginPath();
-      context.moveTo(100, y);
-      context.lineTo(100 + localLineLength, y); // bottom left
+      context.moveTo(112, y);
+      context.lineTo(112 + localLineLength, y); // bottom left
       context.stroke();
     }
   }
@@ -56,7 +56,26 @@
     font: window.theme.numberFont
   });
 
-  graphicsManager.addDrawables([majorLineRenderer, minorLineRenderer, borderedTextRenderer]);
+  const verticalSpeedGauge = new BarGaugeRenderer({
+    from: { x: 100, y: 0 },
+    to: { x: 105, y: height },
+    positiveColor: window.theme.mainColor,
+    negativeColor: window.theme.redColor,
+    center: 0,
+    amplitude: 10
+  });
+
+  const speedGaugeHelper = new ManualRenderer(function (context) {
+    context.strokeStyle = context.fillStyle = context.shadowColor = window.theme.mainColor;
+    context.fillRect(100, 0, 1, height/2);
+    context.fillRect(105, 0, 1, height/2);
+
+    context.strokeStyle = context.fillStyle = context.shadowColor = window.theme.redColor;
+    context.fillRect(100, height/2, 1, height/2);
+    context.fillRect(105, height/2, 1, height/2);
+  });
+
+  graphicsManager.addDrawables([majorLineRenderer, minorLineRenderer, borderedTextRenderer,  verticalSpeedGauge, speedGaugeHelper]);
   graphicsManager.startDrawing();
 
   let altitude = 0;
@@ -66,4 +85,10 @@
     borderedTextRenderer.setValue(altitude);
     altitude += 0.011;
   }, 250);
+
+  let x = 0;
+  setInterval(function () {
+    verticalSpeedGauge.setValue(Math.sin(x)*7.5);
+    x += 0.05;
+  }, 30);
 })();
