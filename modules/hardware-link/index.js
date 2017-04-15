@@ -1,30 +1,27 @@
-const mavlink = require('mavlink');
-const mav = new mavlink(1,1,"v1.0",["common", "ardupilotmega"]);
+const EventEmitter = require('events');
+const net = require('net');
 
-const SerialPort = require('serialport');
-const port = new SerialPort('/dev/ttyACM0', {
-  baudRate: 115200
-});
+class RemoteLink extends EventEmitter {
+  constructor() {
+    super();
+    this.socket = null;
+    this.server = net.createServer((socket) => {
+      if (this.socket != null) this.socket.end();
+      this.socket = socket;
+      this.socket.on('data', this._handleData);
+      console.log('New drone connection');
+      //socket.write('Echo server\r\n');
+      //socket.pipe(socket);
+    });
 
-mav.on("ready", function() {
-  //parse incoming serial data
-  port.on('data', function(data) {
-    mav.parse(data);
-  });
-  
-  //listen for messages
-  /*mav.on("message", function(message) {
-    console.log(message);
-  });*/
+    this.server.listen(7800, '0.0.0.0');
+  }
 
-  /*mav.on("ATTITUDE", function(message, fields) {
-    console.log(fields);
-  });*/
+  _handleData(rawData) {
+    const data = JSON.parse(rawData);
+    this.emit(data.type, data.fields);
+  }
+}
 
-  mav.on("VFR_HUD", function(message, fields) {
-    //console.log(fields);
-  });
 
-});
-
-module.exports = {};
+module.exports = new RemoteLink();

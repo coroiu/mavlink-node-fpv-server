@@ -59,8 +59,6 @@
   const verticalSpeedGauge = new BarGaugeRenderer({
     from: { x: 100, y: 0 },
     to: { x: 105, y: height },
-    positiveColor: window.theme.mainColor,
-    negativeColor: window.theme.redColor,
     center: 0,
     amplitude: 10
   });
