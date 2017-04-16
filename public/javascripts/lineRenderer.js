@@ -7,6 +7,7 @@ class LineRenderer {
     //this.lineThickness = options.lineThickness;
     this.pixelsPerUnit = options.pixelsPerUnit;
     this.value = 0;
+    this.drawValue = 0;
     this.onDrawLine = options.onDrawLine;
   }
 
@@ -16,10 +17,11 @@ class LineRenderer {
    * @return nothing
    */
   render(context) {
-    const offset = (this.value * this.pixelsPerUnit);
+    this.drawValue += (this.value - this.drawValue) * 0.05;
+    const offset = (this.drawValue * this.pixelsPerUnit);
     const start = this.from + offset % this.lineDistance + this.lineOffset;
     for (let y = start; y < this.to; y += this.lineDistance) {
-      const lineValue = this.value + (this.to / (2*this.pixelsPerUnit)) - (y / this.pixelsPerUnit);
+      const lineValue = this.drawValue + (this.to / (2*this.pixelsPerUnit)) - (y / this.pixelsPerUnit);
       this.onDrawLine(context, y, lineValue);
     }
   }

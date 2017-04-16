@@ -6,6 +6,7 @@ class GraphicsManager {
     this.memoryContext = canvas.getContext("2d");
     this.drawables = [];
     this.rotation = 0; // in radians
+    this.drawRotation = 0;
     this.isDrawing = false;
   }
 
@@ -34,9 +35,10 @@ class GraphicsManager {
 
   _draw() {
     if (!this.isDrawing) return;
+    this.drawRotation += (this.rotation - this.drawRotation) * 0.05;
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.context.translate(this.canvas.width/2, this.canvas.height/2);
-    this.context.rotate(this.rotation);
+    this.context.rotate(this.drawRotation);
     this.context.translate(-this.canvas.width/2, -this.canvas.height/2);
     for (let i = 0; i < this.drawables.length; ++i) {
       this.drawables[i].render(this.context);

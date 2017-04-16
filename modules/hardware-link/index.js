@@ -8,8 +8,8 @@ class RemoteLink extends EventEmitter {
     this.server = net.createServer((socket) => {
       if (this.socket != null) this.socket.end();
       this.socket = socket;
-      this.socket.on('data', this._handleData);
-      console.log('New drone connection');
+      this.socket.on('data', this._handleData.bind(this));
+      console.log('New drone connection.');
       //socket.write('Echo server\r\n');
       //socket.pipe(socket);
     });
@@ -18,8 +18,13 @@ class RemoteLink extends EventEmitter {
   }
 
   _handleData(rawData) {
-    const data = JSON.parse(rawData);
-    this.emit(data.type, data.fields);
+    try {
+      const data = JSON.parse(rawData);
+      this.emit('data', data.type, data.fields);
+      this.emit(data.type, data.fields);
+    } catch (ex) {
+      console.error('Error occurred when parsing drone message.');
+    }
   }
 }
 

@@ -1,13 +1,15 @@
 // Browser client
-class MavlinkRPC {
+class MavlinkRPC extends EventEmitter {
   constructor() {
+    super();
     //const client = new Eureca.Client({ uri: 'ws://localhost:3000/', prefix: 'eureca.io', transport: 'sockjs' });
     const client = new Eureca.Client();
     
     client.exports = {
-      onMessage: (event, message, fields) => {
+      onMessage: this._onMessage.bind(this)
+      /*onMessage: (event, message, fields) => {
         //console.log(fields);
-      }
+      }*/
     };
 
     client.ready(function (link) {
@@ -15,6 +17,16 @@ class MavlinkRPC {
     });
   }
 
-  _onMessage(message) {    
+  _onMessage(type, fields) {
+    if (fields === null) {
+      this.emit(type);
+    } else {
+      this.emit(type, fields);
+      for (var key in fields) {
+        if (fields.hasOwnProperty(key)) {
+          this.emit(`fields.${key}`, fields[key]);
+        }
+      }
+    }
   }
 }

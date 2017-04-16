@@ -16,9 +16,7 @@ class MavlinkRPC {
       }
     };
 
-    mav.on('VFR_HUD', (message, fields) => {
-      this._onHardwareLinkMessage('VFR_HUD', message, fields);
-    });
+    mav.on('data', this._onHardwareLinkMessage.bind(this));
 
     this.server.attach(this.app.server);
     //console.log(this.server.onConnect);
@@ -46,11 +44,11 @@ class MavlinkRPC {
     delete this.connections[connection.id];
   }
 
-  _onHardwareLinkMessage(event, message, fields) {
+  _onHardwareLinkMessage(event, fields) {
     for (var key in this.connections) {
       if (this.connections.hasOwnProperty(key)) {
         const connection = this.connections[key];
-        connection.client.onMessage(event, message, fields);      
+        connection.client.onMessage(event, fields);
       }
     }
   }

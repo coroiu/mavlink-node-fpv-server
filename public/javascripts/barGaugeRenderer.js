@@ -4,6 +4,7 @@ class BarGaugeRenderer {
     this.to = options.to;
     this.centerY = this.from.y + (this.to.y - this.from.y) / 2;
     this.value = 0;
+    this.drawValue = 0;
     this.amplitude = options.amplitude;
     this.center = options.center;
   }
@@ -20,7 +21,8 @@ class BarGaugeRenderer {
     } else {
       context.strokeStyle = context.fillStyle = context.shadowColor = window.theme.mainColor;
     }
-    let height = (this.to.y - this.from.y) * ((this.value - this.center) / (this.amplitude - this.center)) / 2;
+    this.drawValue += (this.value - this.drawValue) * 0.05;
+    let height = (this.to.y - this.from.y) * ((this.drawValue - this.center) / (this.amplitude - this.center)) / 2;
     context.fillRect(this.from.x, this.centerY, this.to.x - this.from.x, -height);
   }
 

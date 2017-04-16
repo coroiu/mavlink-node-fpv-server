@@ -1,16 +1,52 @@
-(function () {
-  //const div = document.getElementById("altitude");
-  //context.lineWidth = this.lineThickness;
-  const c = document.getElementById('attitude');
-  const context = c.getContext('2d');
-  const width = 600;
-  const height = 600;
-  const centerX = width / 2;
-  const centerY = height / 2;
-  const fontSize = 16;
+class AttitudeHandler {
+  constructor(rpc) {
+    const c = document.getElementById('attitude');
+    const context = c.getContext('2d');
+    
+    this.width = 600;
+    this.height = 600;
+    this.fontSize = 16;
 
-  function drawLine() {
-    return function (context, y, lineValue) {
+    const centerX = this.width / 2;
+    const centerY = this.height / 2;
+    const graphicsManager = new GraphicsManager(c);
+    const majorLineRenderer = new LineRenderer({
+      from: 0,
+      to: this.height,
+      lineDistance: 150,
+      lineOffset: 0,
+      pixelsPerUnit: 150/5,
+      onDrawLine: this.drawLine()
+    });
+
+    const crosshairRenderer = new ManualRenderer(function (context) {
+      const crosshairWidth = 75;
+      const crosshairHeight = 10;
+      const crosshairMiddleWidth = 20;
+      const crosshairMiddleHeight = 10;
+      context.beginPath();
+      context.moveTo(centerX - crosshairWidth/2, centerY);
+      context.lineTo(centerX - crosshairMiddleWidth/2, centerY);
+      context.lineTo(centerX, centerY + crosshairMiddleHeight);
+      context.lineTo(centerX + crosshairMiddleWidth/2, centerY);
+      context.lineTo(centerX + crosshairWidth/2, centerY);
+      context.stroke();
+    });
+
+    graphicsManager.addDrawables([majorLineRenderer, crosshairRenderer]);
+    graphicsManager.startDrawing();
+
+    rpc.on('fields.pitch', (pitch) => {
+      majorLineRenderer.setValue(pitch * 180 / Math.PI);
+    });
+
+    rpc.on('fields.roll', (roll) => {
+      graphicsManager.setRotation(roll);
+    });
+  }
+
+  drawLine() {
+    return (context, y, lineValue) => {
       //let localLineLength = lineLength;
       context.strokeStyle = context.fillStyle = context.shadowColor = window.theme.mainColor;
       if (lineValue < 0.1 && lineValue > -0.1) {
@@ -39,12 +75,12 @@
       context.lineTo(sideSpace + lineLength, y);
 
       if (lineValue < -0.1) {
-        context.moveTo(width - sideSpace, y - drops);
+        context.moveTo(this.width - sideSpace, y - drops);
       } else {
-        context.moveTo(width - sideSpace, y + drops);
+        context.moveTo(this.width - sideSpace, y + drops);
       }
-      context.lineTo(width - sideSpace, y);
-      context.lineTo(width - sideSpace - lineLength, y);
+      context.lineTo(this.width - sideSpace, y);
+      context.lineTo(this.width - sideSpace - lineLength, y);
       context.stroke();
 
       // TEXT
@@ -57,63 +93,23 @@
       lineValue = Math.abs(Math.round(lineValue*100)/100);
       const textWidth = context.measureText(lineValue).width;
       const textSpacing = 20;
-      context.font = `${fontSize}px '${window.theme.numberFont}'`;
+      context.font = `${this.fontSize}px '${window.theme.numberFont}'`;
       context.fillText(lineValue, sideSpace - textWidth - textSpacing, textY);
-      context.fillText(lineValue, width - sideSpace + textSpacing, textY);
+      context.fillText(lineValue, this.width - sideSpace + textSpacing, textY);
     }
   }
+}
 
-  const graphicsManager = new GraphicsManager(c);
-  const majorLineRenderer = new LineRenderer({
-    from: 0,
-    to: height,
-    lineDistance: 150,
-    lineOffset: 0,
-    pixelsPerUnit: 150/5,
-    onDrawLine: drawLine()
-  });
+(function () {
+  //const div = document.getElementById("altitude");
+  //context.lineWidth = this.lineThickness;
 
-  const crosshairRenderer = new ManualRenderer(function (context) {
-    const crosshairWidth = 75;
-    const crosshairHeight = 10;
-    const crosshairMiddleWidth = 20;
-    const crosshairMiddleHeight = 10;
-    context.beginPath();
-    context.moveTo(centerX - crosshairWidth/2, centerY);
-    context.lineTo(centerX - crosshairMiddleWidth/2, centerY);
-    context.lineTo(centerX, centerY + crosshairMiddleHeight);
-    context.lineTo(centerX + crosshairMiddleWidth/2, centerY);
-    context.lineTo(centerX + crosshairWidth/2, centerY);
-    context.stroke();
-  });
-
-  // const minorLineRenderer = new LineRenderer({
-  //   from: 0,
-  //   to: height,
-  //   lineDistance: 40,
-  //   lineOffset: 0,
-  //   pixelsPerUnit: 40,
-  //   onDrawLine: drawLine(20)
-  // });
-
-  // const borderedTextRenderer = new BorderedTextRenderer({
-  //   x: 15,
-  //   y: (height + fontSize) / 2 - 4,
-  //   padding: 10,
-  //   fontHeight: fontSize,
-  //   borderThickness: 1.5,
-  //   font: 'Telegrama'
-  // });
-
-  graphicsManager.addDrawables([majorLineRenderer, crosshairRenderer]);
-  graphicsManager.startDrawing();
-
-  let x = 0;
-  let y = 0;
-  setInterval(function () {
-    majorLineRenderer.setValue(Math.sin(x)*5);
-    graphicsManager.setRotation(Math.sin(y));
-    x += 0.05 + 0.1 * Math.random();
-    y += 0.05 + 0.05 * Math.random();
-  }, 33);
+  // let x = 0;
+  // let y = 0;
+  // setInterval(function () {
+  //   majorLineRenderer.setValue(Math.sin(x)*5);
+  //   graphicsManager.setRotation(Math.sin(y));
+  //   x += 0.05 + 0.1 * Math.random();
+  //   y += 0.05 + 0.05 * Math.random();
+  // }, 33);
 })();

@@ -1,18 +1,65 @@
-(function () {
-  //const div = document.getElementById("altitude");
-  //context.lineWidth = this.lineThickness;
-  const c = document.getElementById('heading');
-  const context = c.getContext('2d');
-  const width = 600;
-  const height = 100;
-  const centerX = width / 2;
-  const centerY = height / 2;
-  const fontSize = 14;
-  const arrowWidth = 60;
-  const arrowHeight = 30;
+class HeadingHandler {
+  constructor(rpc) {    
+    const c = document.getElementById('heading');
+    const context = c.getContext('2d');
+    const width = 600;
+    const height = 100;
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const arrowWidth = 60;
+    const arrowHeight = 30;
 
-  function drawLine(isMajor) {
-    return function (context, x, lineValue) {
+    this.fontSize = 14;
+
+    const graphicsManager = new GraphicsManager(c);
+    const majorLineRenderer = new LineRenderer({
+      from: 0,
+      to: width,
+      lineDistance: 80,
+      lineOffset: -20,
+      pixelsPerUnit: 80/15,
+      onDrawLine: this.drawLine(true)
+    });
+
+    const minorLineRenderer1 = new LineRenderer({
+      from: 0,
+      to: width,
+      lineDistance: 80,
+      lineOffset: -45,
+      pixelsPerUnit: 80/15,
+      onDrawLine: this.drawLine(false)
+    });
+
+    const minorLineRenderer2 = new LineRenderer({
+      from: 0,
+      to: width,
+      lineDistance: 80,
+      lineOffset: -75,
+      pixelsPerUnit: 80/15,
+      onDrawLine: this.drawLine(false)
+    });
+    
+    const arrowRenderer = new ManualRenderer((context) => {
+      context.beginPath();
+      context.moveTo(centerX - arrowWidth/2, 2);
+      context.lineTo(centerX + arrowWidth/2, 2);
+      context.lineTo(centerX, 2 + arrowHeight);
+      context.lineTo(centerX - arrowWidth/2, 2);
+      context.stroke();
+    })
+
+    graphicsManager.addDrawables([majorLineRenderer, minorLineRenderer1, minorLineRenderer2, arrowRenderer]);
+    graphicsManager.startDrawing();
+
+    rpc.on('fields.heading', (heading) => {
+      majorLineRenderer.setValue(heading);
+      minorLineRenderer1.setValue(heading);
+      minorLineRenderer2.setValue(heading);
+    });
+  }
+
+  drawLine(isMajor) {
+    return (context, x, lineValue) => {
       //let localLineLength = lineLength;
       context.strokeStyle = context.fillStyle = context.shadowColor = window.theme.mainColor;
 
@@ -44,7 +91,7 @@
         }
 
         const textWidth = context.measureText(text).width;
-        context.font = `${fontSize}px '${window.theme.numberFont}'`;
+        context.font = `${this.fontSize}px '${window.theme.numberFont}'`;
         context.fillText(text, x - textWidth/2, 19);
       }
 
@@ -60,62 +107,4 @@
       context.stroke();
     }
   }
-
-  const graphicsManager = new GraphicsManager(c);
-  const majorLineRenderer = new LineRenderer({
-    from: 0,
-    to: width,
-    lineDistance: 80,
-    lineOffset: -20,
-    pixelsPerUnit: 80/15,
-    onDrawLine: drawLine(true)
-  });
-
-  const minorLineRenderer1 = new LineRenderer({
-    from: 0,
-    to: width,
-    lineDistance: 80,
-    lineOffset: -45,
-    pixelsPerUnit: 80/15,
-    onDrawLine: drawLine(false)
-  });
-
-  const minorLineRenderer2 = new LineRenderer({
-    from: 0,
-    to: width,
-    lineDistance: 80,
-    lineOffset: -75,
-    pixelsPerUnit: 80/15,
-    onDrawLine: drawLine(false)
-  });
-
-  // const minorLineRenderer = new LineRenderer({
-  //   from: 0,
-  //   to: height,
-  //   lineDistance: 40,
-  //   lineOffset: 0,
-  //   pixelsPerUnit: 40,
-  //   onDrawLine: drawLine(20)
-  // });
-  
-  const arrowRenderer = new ManualRenderer(function (context) {
-    context.beginPath();
-    context.moveTo(centerX - arrowWidth/2, 2);
-    context.lineTo(centerX + arrowWidth/2, 2);
-    context.lineTo(centerX, 2 + arrowHeight);
-    context.lineTo(centerX - arrowWidth/2, 2);
-    context.stroke();
-  })
-
-  graphicsManager.addDrawables([majorLineRenderer, minorLineRenderer1, minorLineRenderer2, arrowRenderer]);
-  graphicsManager.startDrawing();
-
-  let x = 0;
-  setInterval(function () {
-    majorLineRenderer.setValue(x % 360);
-    minorLineRenderer1.setValue(x % 360);
-    minorLineRenderer2.setValue(x % 360);
-    //graphicsManager.setRotation(Math.sin(y));
-    x += 0.2;
-  }, 33);
-})();
+}
