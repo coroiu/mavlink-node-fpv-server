@@ -8,6 +8,7 @@ class LineRenderer {
     this.pixelsPerUnit = options.pixelsPerUnit;
     this.value = 0;
     this.drawValue = 0;
+    this.wrapValue = options.wrapValue;
     this.onDrawLine = options.onDrawLine;
   }
 
@@ -17,7 +18,12 @@ class LineRenderer {
    * @return nothing
    */
   render(context) {
-    this.drawValue += (this.value - this.drawValue) * 0.05;
+    if (this.wrapValue !== undefined) {
+      let shortest_angle = ((((this.value - this.drawValue) % this.wrapValue) + this.wrapValue*1.5) % this.wrapValue) - this.wrapValue/2;
+      this.drawValue += shortest_angle * 0.05;
+    } else {
+      this.drawValue += (this.value - this.drawValue) * 0.05;
+    }
     const offset = (this.drawValue * this.pixelsPerUnit);
     const start = this.from + offset % this.lineDistance + this.lineOffset;
     for (let y = start; y < this.to; y += this.lineDistance) {

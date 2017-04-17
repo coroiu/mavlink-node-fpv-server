@@ -8,6 +8,7 @@ class GraphicsManager {
     this.rotation = 0; // in radians
     this.drawRotation = 0;
     this.isDrawing = false;
+    this.wrapValue = Math.PI * 2;
   }
 
   startDrawing() {
@@ -35,7 +36,8 @@ class GraphicsManager {
 
   _draw() {
     if (!this.isDrawing) return;
-    this.drawRotation += (this.rotation - this.drawRotation) * 0.05;
+    const angleDiff = ((((this.rotation - this.drawRotation) % this.wrapValue) + this.wrapValue*1.5) % this.wrapValue) - this.wrapValue/2;
+    this.drawRotation += angleDiff * 0.05;
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.context.translate(this.canvas.width/2, this.canvas.height/2);
     this.context.rotate(this.drawRotation);

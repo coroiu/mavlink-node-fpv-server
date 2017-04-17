@@ -18,6 +18,7 @@ class HeadingHandler {
       lineDistance: 80,
       lineOffset: -20,
       pixelsPerUnit: 80/15,
+      wrapValue: 360,
       onDrawLine: this.drawLine(true)
     });
 
@@ -27,6 +28,7 @@ class HeadingHandler {
       lineDistance: 80,
       lineOffset: -45,
       pixelsPerUnit: 80/15,
+      wrapValue: 360,
       onDrawLine: this.drawLine(false)
     });
 
@@ -36,6 +38,7 @@ class HeadingHandler {
       lineDistance: 80,
       lineOffset: -75,
       pixelsPerUnit: 80/15,
+      wrapValue: 360,
       onDrawLine: this.drawLine(false)
     });
     

@@ -9,6 +9,15 @@ body {
 a {
   color: #00B7FF; }
 
+img#video {
+  position: fixed;
+  display: block;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%; }
+
 canvas#altitude {
   /*width: 200px;
   height: 600px;*/
