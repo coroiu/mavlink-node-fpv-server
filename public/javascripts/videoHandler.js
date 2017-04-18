@@ -1,12 +1,19 @@
 class VideoHandler {
-  constructor() {
+  constructor(rpc) {
     this.video = document.querySelector('img#video');
     this.isPlaying = false;
     this.timeout = 3000;
     this.timer = null;
+    this.url = null;
 
     this.video.onerror = this._onError.bind(this);
     this.video.onload = this._onLoad.bind(this);
+
+    rpc.on('info', (fields) => {
+      const videoPath = fields.videoPath;
+      this.url = `http://${videoPath.address}:${videoPath.port}/?action=stream#`;
+      console.log(fields);
+    });
 
     this._reload();
   }
@@ -28,6 +35,6 @@ class VideoHandler {
 
   _reload() {
     this.isPlaying = false;
-    this.video.src = 'http://192.168.0.206:8080/?action=stream#' + Date.now();
+    this.video.src = this.url + Date.now();
   }
 }

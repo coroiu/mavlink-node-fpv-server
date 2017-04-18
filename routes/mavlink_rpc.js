@@ -9,6 +9,16 @@ class MavlinkRPC {
     this.mav = mav;
     this.server.onConnect(this._onConnect.bind(this));
     this.server.onDisconnect(this._onDisconnect.bind(this));
+    this.info = {
+      serialPath: {
+        port: undefined,
+        address: undefined
+      }, 
+      videoPath: {
+        port: undefined,
+        address: undefined
+      }
+    };
 
     this.server.exports = {
       hello: () => {
@@ -37,6 +47,7 @@ class MavlinkRPC {
   _onConnect(connection) {
     console.log('New client ', connection.id, connection.eureca.remoteAddress);
     this.connections[connection.id] = { client: connection.clientProxy };
+    this._sendToAll('info', this.info);
   }
 
   _onDisconnect(connection) {
@@ -44,12 +55,28 @@ class MavlinkRPC {
     delete this.connections[connection.id];
   }
 
-  _onHardwareLinkMessage(event, fields) {
+  _sendToAll(event, fields) {
     for (var key in this.connections) {
       if (this.connections.hasOwnProperty(key)) {
         const connection = this.connections[key];
         connection.client.onMessage(event, fields);
       }
+    }
+  }
+
+  _onHardwareLinkMessage(event, fields) {
+    if (event === 'info.serialPath') {
+      this.info.serialPath = {
+        port: fields.port,
+        address: fields.address
+      };
+    } else if (event === 'info.videoPath') {
+      this.info.videoPath = {
+        port: fields.port,
+        address: fields.address
+      };
+    } else {
+      this._sendToAll(event, fields);
     }
   }
 }
