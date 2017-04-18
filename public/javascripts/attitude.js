@@ -41,7 +41,7 @@ class AttitudeHandler {
     });
 
     rpc.on('fields.roll', (roll) => {
-      graphicsManager.setRotation(roll);
+      graphicsManager.setRotation(-roll);
     });
   }
 

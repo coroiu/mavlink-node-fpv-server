@@ -2,7 +2,7 @@ class VideoHandler {
   constructor() {
     this.video = document.querySelector('img#video');
     this.isPlaying = false;
-    this.timeout = 1000;
+    this.timeout = 3000;
     this.timer = null;
 
     this.video.onerror = this._onError.bind(this);
@@ -12,11 +12,12 @@ class VideoHandler {
   }
 
   _onError() {
+    this.isPlaying = false;
     this._resetTimer();
   }
 
   _onLoad() {
-    this.isPlaying = false;
+    this.isPlaying = true;
     this._resetTimer();
   }
 

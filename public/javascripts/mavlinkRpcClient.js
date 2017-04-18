@@ -3,7 +3,7 @@ class MavlinkRPC extends EventEmitter {
   constructor() {
     super();
     //const client = new Eureca.Client({ uri: 'ws://localhost:3000/', prefix: 'eureca.io', transport: 'sockjs' });
-    const client = new Eureca.Client({ retries: 99999 });
+    const client = new Eureca.Client({ uri: 'ws://192.168.0.103:3000/', prefix: 'eureca.io', retries: 99999 });
     
     client.exports = {
       onMessage: this._onMessage.bind(this)

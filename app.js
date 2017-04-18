@@ -6,6 +6,7 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mav = require('./modules/hardware-link');
+const StunServer = require('./modules/stun_server');
 
 const routes = require('./routes/index');
 const users = require('./routes/users');
@@ -15,6 +16,7 @@ const app = express();
 app.server = http.createServer(app);
 
 const mavlinkRpc = new MavlinkRPC(app, mav);
+const stunServer = new StunServer([7801, 7802, 7803]);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
